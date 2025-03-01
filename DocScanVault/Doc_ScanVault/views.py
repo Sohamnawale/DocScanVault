@@ -50,3 +50,32 @@ def login(request):
             return JsonResponse({'error': 'User not found'}, status=404)
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=400)
+
+def user_profile(request,user_id):
+    if request.method == "GET":
+        user = get_object_or_404(User, User_id=user_id)
+        credit = get_object_or_404(Credit, user_id=user_id)
+        return render(request, 'Doc_ScanVault/profile.html',{'user': user,'credit':credit})
+    
+    try:
+        user = User.objects.get(User_id=user_id)
+        credit = Credit.objects.get(user_id=user_id)
+
+        return JsonResponse({
+            'user': {
+                'id': user.User_id,
+                'username': user.Username,
+                'email': user.email,
+                'role': user.role
+            },
+            'credits':{
+                'balance':credit.balance,
+                'last_reset_date': credit.last_reset_date
+            }
+        },status = 200)
+    except User.DoesNotExist:
+        return JsonResponse({'error':'User not found'},status = 404)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+    
+
