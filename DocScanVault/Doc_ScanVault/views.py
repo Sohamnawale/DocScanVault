@@ -39,7 +39,7 @@ def login(request):
     if request.method == "POST":
         try:
             user = User.objects.get(Username=request.POST.get('Username'))
-            if check_password(request.POST.get('Password'), user.Passwords):
+            if check_password(request.POST.get('Passwords'), user.Passwords):
                 return JsonResponse({'message': 'User logged in successfully', 'user_id': user.User_id},
                                     status=200)
             else:

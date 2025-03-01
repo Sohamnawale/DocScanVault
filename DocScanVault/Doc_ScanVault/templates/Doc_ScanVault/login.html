@@ -1,0 +1,41 @@
+<!Doctype html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DocScanVault</title>
+    <link rel="stylesheet" href="{% static "styles/index.css" %}">
+</head>
+
+<body>
+    <header>
+        <h2 class="logo">AIvyInterview</h2>
+        <nav class="navigation">
+            <a href="#">Home</a>
+            <a href="#">About</a>
+            <a href="#">Services</a>
+            <a href="#">Contact</a>
+    </header>
+    <section class="home" id="'home">
+        <div class="home-text">
+            <span>Welcome to</span>
+            <h1>DocScanVault App!</h1>
+            <p>Login.</p>
+            <form action="/login" method="POST">
+                {% csrf_token %}
+                <input type="text" id="inputString" name="Username" placeholder="   Enter The Username  " class="input-box" required>
+                <input type="text" id="inputString" name="Password" placeholder="   Enter The Password  " class="input-box" required>
+                <button type="submit" class="btn">Login</button>
+            </form>
+
+        </div>
+    </section> 
+
+    <script src="{% static 'javascripts/index.js' %}"></script>
+
+
+</body>
+
+</html>
