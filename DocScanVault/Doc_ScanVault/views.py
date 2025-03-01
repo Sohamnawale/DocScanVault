@@ -1,8 +1,10 @@
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.contrib.auth.hashers import make_password, check_password
-from .models import User
+from .models import User, Credit
 from django.views.decorators.csrf import csrf_exempt
+from django.shortcuts import get_object_or_404
+from django.utils import timezone
 
 @csrf_exempt  # Temporarily exempt CSRF protection for simplicity
 def index(request):
@@ -18,6 +20,7 @@ def index(request):
                 Passwords=make_password(request.POST.get('Password')),  # Hashing the password
                 role='User'
             )
+            credit = Credit.objects.create(user_id = user.User_id, balance = 20, last_reset_date =timezone.now()) # 
             return JsonResponse({'message': 'User created successfully', 'user_id': user.User_id}, status=201)
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=400)
@@ -32,7 +35,8 @@ def login(request):
             username = request.POST.get('Username')
             password = request.POST.get('Password')
             user = User.objects.get(Username=username)
-            
+            credit = get_object_or_404(Credit, user_id = user.User_id)
+            print(credit.balance)
             # Debug: Print out password comparison (hashed vs inputted password)
             print(f"Stored Password: {user.Passwords}")
             print(f"Entered Password: {password}")
