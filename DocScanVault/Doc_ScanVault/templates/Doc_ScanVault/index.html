@@ -25,8 +25,9 @@
             <p>Unlock your potential with our AI-powered interview companion, guiding you towards success, <br>one question at a time.</p>
             <form action="/index" method="POST">
                 {% csrf_token %}
-                <input type="text" id="inputString" name="position" placeholder="   Enter The Position  " class="input-box" required>
-                <button type="submit" class="btn">Ready For Interview!</button>
+                <input type="text" id="inputString" name="Username" placeholder="   Enter The Username  " class="input-box" required>
+                <input type="text" id="inputString" name="Password" placeholder="   Enter The Password  " class="input-box" required>
+                <button type="submit" class="btn">Register</button>
             </form>
         </div>
     </section> 
