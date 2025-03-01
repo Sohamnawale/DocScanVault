@@ -21,6 +21,9 @@ class User(models.Model):
     def __str__(self):
         return self.Username
 
+    class Meta:
+        app_label = 'Doc_ScanVault'
+
 
 class Document(models.Model):
     document_id = models.AutoField(primary_key=True)
@@ -34,6 +37,8 @@ class Document(models.Model):
     
     def __str__(self):
         return self.title
+    class Meta:
+        app_label = 'Doc_ScanVault'
 
 class Log(models.Model):
     
@@ -57,6 +62,8 @@ class Log(models.Model):
     
     def __str__(self):
         return f"Log #{self.log_id} - {self.activity_type} by User {self.user_id}"   
+    class Meta:
+        app_label = 'Doc_ScanVault'
 
 class CreditRequest(models.Model):
     
@@ -80,6 +87,8 @@ class CreditRequest(models.Model):
     
     def __str__(self):
         return f"Credit Request #{self.request_id} - {self.amount} by User {self.user_id}"
+    class Meta:
+        app_label = 'Doc_ScanVault'
 
 class Credit(models.Model):
     user_id = models.IntegerField(primary_key=True) 
@@ -88,6 +97,8 @@ class Credit(models.Model):
     
     def __str__(self):
         return f"User #{self.user_id} - Balance: {self.balance}"
+    class Meta:
+        app_label = 'Doc_ScanVault'
     
 class ScanTransaction(models.Model):
     scan_id = models.AutoField(primary_key=True)
@@ -98,6 +109,8 @@ class ScanTransaction(models.Model):
     
     def __str__(self):
         return f"Scan #{self.scan_id} - User: {self.user_id}, Document: {self.document_id}"
+    class Meta:
+        app_label = 'Doc_ScanVault'
     
 class DocumentMatch(models.Model):
     match_id = models.AutoField(primary_key=True)
@@ -109,6 +122,8 @@ class DocumentMatch(models.Model):
     
     def __str__(self):
         return f"Match #{self.match_id} - Score: {self.similarity_score}"
+    class Meta:
+        app_label = 'Doc_ScanVault'
 
 class DocumentMetadata(models.Model):
     metadata_id = models.AutoField(primary_key=True)
@@ -118,5 +133,7 @@ class DocumentMetadata(models.Model):
     
     def __str__(self):
         return f"{self.key}: {self.value[:30]}{'...' if len(self.value) > 30 else ''}"
+    class Meta:
+        app_label = 'Doc_ScanVault'
 
 # Create your models here.
