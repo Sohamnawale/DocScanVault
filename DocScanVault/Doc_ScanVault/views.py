@@ -11,3 +11,8 @@ from django.views.decorators.csrf import csrf_exempt
 def index(request):
     if request.method == "GET":
         return render(request, 'Doc_ScanVault/index.html')
+    if request.method == "POST":
+        print(request.POST.get("Username"))
+        print(request.POST.get("Password"))
+        return JsonResponse({'message': 'User created successfully'}, status=201)
+        
