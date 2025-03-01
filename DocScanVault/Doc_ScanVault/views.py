@@ -23,10 +23,10 @@ def index(request):
         print(request.POST.get("Password"))
         try:
             user = User.objects.create(
-                Username=request.POST.get['Username'],
-                email=request.POST.get['email'],
-                Passwords=make_password(request.POST.get['Passwords']),
-                role=request.POST.get['role']
+                Username=request.POST.get('Username'),
+                email='lucifer@comp.com',
+                Passwords=make_password(request.POST.get('Passwords')),
+                role='User'
             )
             return JsonResponse({'message': 'User created successfully', 'user_id': user.User_id}, status=201)
         except Exception as e:

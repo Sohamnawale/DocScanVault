@@ -21,9 +21,6 @@ class User(models.Model):
     def __str__(self):
         return self.Username
 
-    class Meta:
-        app_label = 'Doc_ScanVault'
-
 
 class Document(models.Model):
     document_id = models.AutoField(primary_key=True)
