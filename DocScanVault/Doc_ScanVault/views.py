@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.contrib.auth.hashers import make_password, check_password
-from .models import User, Credit
+from .models import CreditRequest, User, Credit
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
@@ -77,5 +77,49 @@ def user_profile(request,user_id):
         return JsonResponse({'error':'User not found'},status = 404)
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
+    
+def request_credits(request, user_id):
+    """
+    POST /credits/request/:user_id
+    Request admin to add credits to user account
+    """
+    if request.method != "POST":
+        return JsonResponse({'error': 'Invalid request method'}, status=405)
+    
+    try:
+        # Check if user exists
+        try:
+            user = User.objects.get(User_id=user_id)
+        except User.DoesNotExist:
+            return JsonResponse({'error': 'User not found'}, status=404)
+        
+        # Get amount from request body
+        amount = request.POST.get('amount')
+        if not amount:
+            return JsonResponse({'error': 'Amount is required'}, status=400)
+        
+        amount = int(amount)
+        if amount <= 0:
+            return JsonResponse({'error': 'Amount must be greater than zero'}, status=400)
+        
+        # Create credit request
+        credit_request = CreditRequest.objects.create(
+            user_id=user_id,
+            amount=amount,
+            status=CreditRequest.Status.PENDING,
+            requested_at=timezone.now()
+        )
+        
+        return JsonResponse({
+            'message': 'Credit request sent to admin',
+            'request_id': credit_request.request_id,
+            'status': credit_request.status
+        }, status=201)
+        
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=400)
+
+
+        
     
 
