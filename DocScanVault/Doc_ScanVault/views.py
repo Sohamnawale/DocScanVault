@@ -4,7 +4,7 @@ import os
 from django.conf import settings
 from django.http import JsonResponse
 from PIL import Image
-from IPython.display import Markdown
+
 from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
