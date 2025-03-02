@@ -1,7 +1,8 @@
+import hashlib
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.contrib.auth.hashers import make_password, check_password
-from .models import CreditRequest, User, Credit
+from .models import CreditRequest, Document, ScanTransaction, User, Credit
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
@@ -58,7 +59,7 @@ def user_profile(request,user_id):
     if request.method == "GET":
         user = get_object_or_404(User, User_id=user_id)
         credit = get_object_or_404(Credit, user_id=user_id)
-        return render(request, 'Doc_ScanVault/profile.html',{'user': user,'credit':credit})
+        return render(request, 'Doc_ScanVault/profile.html',{'user': user,'credit':credit,'user_id': user_id})
     
     try:
         user = User.objects.get(User_id=user_id)
@@ -123,19 +124,52 @@ def request_credits(request, user_id):
         return JsonResponse({'error': str(e)}, status=400)
 
     
-def upload(request):
- 
+def upload(request, user_id):
+    user = get_object_or_404(User, User_id=user_id) #get user object
     if request.method == 'POST':
-        files=request.FILES.getlist('files')
-        print(files)
+        files = request.FILES.getlist('files')
         for uploaded_file in files:
             file_path = os.path.join(settings.MEDIA_ROOT, uploaded_file.name)
             os.makedirs(os.path.dirname(file_path), exist_ok=True)
             with open(file_path, 'wb') as destination:
                 for chunk in uploaded_file.chunks():
                     destination.write(chunk)
-       
-    return render(request, 'Doc_ScanVault/upload.html')
+
+            # Calculate content hash
+            with open(file_path, 'rb') as f:
+                content_hash = hashlib.sha256(f.read()).hexdigest()
+
+            # Save Document
+            document = Document.objects.create(
+                user_id=user_id,
+                title=uploaded_file.name,
+                content="Content not stored in db", # or read file and put content, or remove this field.
+                file_path=file_path,
+                file_size=uploaded_file.size,
+                upload_date=timezone.now(),
+                content_hash=content_hash,
+            )
+
+            # Deduct Credits
+            credit = get_object_or_404(Credit, user_id=user_id)
+            if credit.balance >= 1:
+                credit.balance -= 1
+                credit.save()
+
+                # Create Scan Transaction
+                ScanTransaction.objects.create(
+                    user_id=user_id,
+                    document_id=document.document_id,
+                    scan_date=timezone.now(),
+                    credits_used=1,
+                )
+            else:
+                # Handle insufficient credits (e.g., display an error message)
+                return render(request, 'Doc_ScanVault/upload.html', {'error': 'Insufficient credits', 'user_id': user_id})
+
+        return redirect('user_profile', user_id=user_id) #redirect to profile page after upload.
+
+    return render(request, 'Doc_ScanVault/upload.html', {'user_id': user_id})
         
     
 
