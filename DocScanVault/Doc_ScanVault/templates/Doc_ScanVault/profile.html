@@ -408,39 +408,36 @@
             </div>
 
             <div class="activity-section">
-                <div class="profile-card">
-                    <h3 class="section-title">Recent Scans</h3>
-                    <table class="activity-table">
-                        <thead>
-                            <tr>
-                                <th>Document</th>
-                                <th>Date</th>
-                                <th>Matches</th>
-                                <th>Credits Used</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Research Paper.pdf</td>
-                                <td>Feb 28, 2025</td>
-                                <td><span class="match-percentage">85%</span> - 2 docs</td>
-                                <td>3</td>
-                            </tr>
-                            <tr>
-                                <td>Thesis Draft.docx</td>
-                                <td>Feb 25, 2025</td>
-                                <td><span class="match-percentage">32%</span> - 1 doc</td>
-                                <td>2</td>
-                            </tr>
-                            <tr>
-                                <td>Article.pdf</td>
-                                <td>Feb 20, 2025</td>
-                                <td><span class="match-percentage">76%</span> - 3 docs</td>
-                                <td>3</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+                <h2 class="section-title">Your Documents</h2>
+                {% if documents %}
+                <table class="activity-table">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Upload Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for doc in documents %}
+                        <tr>
+                            <td>{{ doc.title }}</td>
+                            <td>{{ doc.upload_date|date:"F j, Y" }}</td>
+                            <td>
+                                <span class="status-badge 
+                                    {% if doc.status == 'Pending' %}status-pending{% elif doc.status == 'Approved' %}status-approved{% else %}status-rejected{% endif %}">
+                                    {{ doc.status }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <p>No documents uploaded yet.</p>
+                {% endif %}
+            </div>
 
                 <div class="profile-card">
                     <h3 class="section-title">Credit Requests</h3>

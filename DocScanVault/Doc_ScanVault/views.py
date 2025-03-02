@@ -59,11 +59,53 @@ def user_profile(request,user_id):
     if request.method == "GET":
         user = get_object_or_404(User, User_id=user_id)
         credit = get_object_or_404(Credit, user_id=user_id)
-        return render(request, 'Doc_ScanVault/profile.html',{'user': user,'credit':credit,'user_id': user_id})
+        documents = Document.objects.filter(user_id=user_id) 
+
+        documents_data = [
+            {
+                'document_id': doc.document_id,
+                'title': doc.title,
+                'file_path': doc.file_path,
+                'file_size': doc.file_size,
+                'upload_date': doc.upload_date.strftime('%Y-%m-%d %H:%M:%S'),
+                'content_hash': doc.content_hash
+            }
+            for doc in documents
+        ]
+        print(len(documents))
+
+        # return JsonResponse({
+        #     'user': {
+        #         'id': user.User_id,
+        #         'username': user.Username,
+        #         'email': user.email,
+        #         'role': user.role
+        #     },
+        #     'credits':{
+        #         'balance':credit.balance,
+        #         'last_reset_date': credit.last_reset_date
+        #     },
+        #     'documents': documents_data  
+        # },status = 200)
+        return render(request, 'Doc_ScanVault/profile.html',{'user': user,'credit':credit,'user_id': user_id, 'documents': documents_data })
     
     try:
         user = User.objects.get(User_id=user_id)
         credit = Credit.objects.get(user_id=user_id)
+        documents = Document.objects.filter(user_id=user_id) 
+
+        documents_data = [
+            {
+                'document_id': doc.document_id,
+                'title': doc.title,
+                'file_path': doc.file_path,
+                'file_size': doc.file_size,
+                'upload_date': doc.upload_date.strftime('%Y-%m-%d %H:%M:%S'),
+                'content_hash': doc.content_hash
+            }
+            for doc in documents
+        ]
+        print(len(documents))
 
         return JsonResponse({
             'user': {
@@ -75,7 +117,8 @@ def user_profile(request,user_id):
             'credits':{
                 'balance':credit.balance,
                 'last_reset_date': credit.last_reset_date
-            }
+            },
+            'documents': documents_data  
         },status = 200)
     except User.DoesNotExist:
         return JsonResponse({'error':'User not found'},status = 404)
