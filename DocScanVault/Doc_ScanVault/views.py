@@ -22,8 +22,9 @@ def index(request):
                 Passwords=make_password(request.POST.get('Password')),  # Hashing the password
                 role='User'
             )
-            credit = Credit.objects.create(user_id = user.User_id, balance = 20, last_reset_date =timezone.now()) # 
-            return JsonResponse({'message': 'User created successfully', 'user_id': user.User_id}, status=201)
+            credit = Credit.objects.create(user_id = user.User_id, balance = 20, last_reset_date =timezone.now())
+            return redirect('login') 
+            #return JsonResponse({'message': 'User created successfully', 'user_id': user.User_id}, status=201)
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=400)
     return JsonResponse({'error': 'Invalid request method'}, status=405)
@@ -44,7 +45,7 @@ def login(request):
             print(f"Entered Password: {password}")
             
             if check_password(password, user.Passwords):
-                return JsonResponse({'message': 'User logged in successfully', 'user_id': user.User_id}, status=200)
+                return redirect('user_profile', user_id=user.User_id) #redirect to profile 
             else:
                 return JsonResponse({'error': 'Invalid password'}, status=401)
         except User.DoesNotExist:
@@ -133,7 +134,7 @@ def upload(request):
             with open(file_path, 'wb') as destination:
                 for chunk in uploaded_file.chunks():
                     destination.write(chunk)
-    
+       
     return render(request, 'Doc_ScanVault/upload.html')
         
     

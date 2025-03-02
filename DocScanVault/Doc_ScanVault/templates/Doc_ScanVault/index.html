@@ -1,40 +1,36 @@
-<!Doctype html>
+<!DOCTYPE html>
 {% load static %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AIvyInterview</title>
+    <title>DocScanVault</title>
     <link rel="stylesheet" href="{% static "styles/index.css" %}">
 </head>
 
 <body>
     <header>
-        <h2 class="logo">AIvyInterview</h2>
+        <h2 class="logo">DocScanVault</h2>
         <nav class="navigation">
-            <a href="#">Home</a>
-            <a href="#">About</a>
-            <a href="#">Services</a>
-            <a href="#">Contact</a>
+            <a href="/">Home</a>
+            <a href="/login">Login</a>
+            </nav>
     </header>
-    <section class="home" id="'home">
+    <section class="home" id="home">
         <div class="home-text">
             <span>Welcome to</span>
-            <h1>AIvyInterview App!</h1>
-            <p>Unlock your potential with our AI-powered interview companion, guiding you towards success, <br>one question at a time.</p>
-            <form action="/index" method="POST">
+            <h1>DocScanVault App!</h1>
+            <p>Unlock your potential with our document scanning and matching, <br>enhancing document security and management.</p>
+            <form action="/" method="POST">
                 {% csrf_token %}
-                <input type="text" id="inputString" name="Username" placeholder="   Enter The Username  " class="input-box" required>
-                <input type="text" id="inputString" name="Password" placeholder="   Enter The Password  " class="input-box" required>
+                <input type="text" id="inputString" name="Username" placeholder="  Enter The Username  " class="input-box" required>
+                <input type="password" id="inputPassword" name="Password" placeholder="  Enter The Password  " class="input-box" required>
                 <button type="submit" class="btn">Register</button>
             </form>
         </div>
     </section> 
 
     <script src="{% static 'javascripts/index.js' %}"></script>
-
-
 </body>
-
 </html>

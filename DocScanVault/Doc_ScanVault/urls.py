@@ -6,6 +6,6 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('index', views.index, name='index'),
     path('login',views.login,name = 'login'),
-    path('user_profile',views.user_profile,name = 'user_profile'),
+    path('user_profile/<int:user_id>/', views.user_profile, name='user_profile'),
     path('upload', views.upload, name='upload')
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
