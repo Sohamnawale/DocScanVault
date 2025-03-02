@@ -59,7 +59,11 @@ def user_profile(request,user_id):
     if request.method == "GET":
         user = get_object_or_404(User, User_id=user_id)
         credit = get_object_or_404(Credit, user_id=user_id)
-        documents = Document.objects.filter(user_id=user_id) 
+        documents = Document.objects.filter(user_id=user_id) .order_by('-upload_date')
+        uploaded_count = documents.count()
+        scanned_documents = set(ScanTransaction.objects.filter(document_id__in=documents.values_list('document_id', flat=True)).values_list('document_id', flat=True))
+        scanned_count = len(scanned_documents)
+
 
         documents_data = [
             {
@@ -68,7 +72,8 @@ def user_profile(request,user_id):
                 'file_path': doc.file_path,
                 'file_size': doc.file_size,
                 'upload_date': doc.upload_date.strftime('%Y-%m-%d %H:%M:%S'),
-                'content_hash': doc.content_hash
+                'content_hash': doc.content_hash,
+                'scan_data': get_scan_data(doc.document_id)
             }
             for doc in documents
         ]
@@ -87,12 +92,15 @@ def user_profile(request,user_id):
         #     },
         #     'documents': documents_data  
         # },status = 200)
-        return render(request, 'Doc_ScanVault/profile.html',{'user': user,'credit':credit,'user_id': user_id, 'documents': documents_data })
+        return render(request, 'Doc_ScanVault/profile.html',{'user': user,'credit':credit,'user_id': user_id, 'documents': documents_data ,'uploaded_count': uploaded_count,
+        'scanned_count': scanned_count,})
     
     try:
         user = User.objects.get(User_id=user_id)
         credit = Credit.objects.get(user_id=user_id)
-        documents = Document.objects.filter(user_id=user_id) 
+        documents = Document.objects.filter(user_id=user_id)
+        uploaded_count = documents.count()
+        scanned_count = ScanTransaction.objects.filter(document__user_id=user_id).distinct('document_id')
 
         documents_data = [
             {
@@ -101,7 +109,8 @@ def user_profile(request,user_id):
                 'file_path': doc.file_path,
                 'file_size': doc.file_size,
                 'upload_date': doc.upload_date.strftime('%Y-%m-%d %H:%M:%S'),
-                'content_hash': doc.content_hash
+                'content_hash': doc.content_hash,
+                'scan_data': get_scan_data(doc.document_id)
             }
             for doc in documents
         ]
@@ -124,6 +133,17 @@ def user_profile(request,user_id):
         return JsonResponse({'error':'User not found'},status = 404)
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
+
+def get_scan_data(document_id):
+    try:
+        scan = ScanTransaction.objects.filter(document_id=document_id).latest('scan_date')
+        return {
+            'scan_id': scan.scan_id,
+            'scan_date': scan.scan_date.strftime('%Y-%m-%d %H:%M:%S'),
+            'credits_used': scan.credits_used,
+        }
+    except ScanTransaction.DoesNotExist:
+        return None
     
 def request_credits(request, user_id):
     """
@@ -214,5 +234,10 @@ def upload(request, user_id):
 
     return render(request, 'Doc_ScanVault/upload.html', {'user_id': user_id})
         
+def scan(request):
+    user = get_object_or_404(User, User_id=request.user.id)
+    documents = Document.objects.filter(user_id=user.id).order_by('-upload_date')
+    return render(request, 'Doc_ScanVault/scan.html', {'documents': documents})
+
     
 
