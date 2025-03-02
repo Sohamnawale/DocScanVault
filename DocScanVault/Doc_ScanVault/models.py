@@ -1,3 +1,4 @@
+from django.utils import timezone
 from django.db import models
 
 class User(models.Model):
@@ -91,6 +92,7 @@ class Credit(models.Model):
     user_id = models.IntegerField(primary_key=True) 
     balance = models.IntegerField()
     last_reset_date = models.DateTimeField()
+    
     
     def __str__(self):
         return f"User #{self.user_id} - Balance: {self.balance}"

@@ -30,7 +30,7 @@ def index(request):
             return JsonResponse({'error': str(e)}, status=400)
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
-@csrf_exempt  # Temporarily exempt CSRF protection for simplicity
+@csrf_exempt  
 def login(request):
     if request.method == "GET":
         return render(request, 'Doc_ScanVault/login.html')
@@ -59,6 +59,9 @@ def user_profile(request,user_id):
     if request.method == "GET":
         user = get_object_or_404(User, User_id=user_id)
         credit = get_object_or_404(Credit, user_id=user_id)
+
+        reset_daily_credits(credit)
+
         documents = Document.objects.filter(user_id=user_id) .order_by('-upload_date')
         uploaded_count = documents.count()
         scanned_documents = set(ScanTransaction.objects.filter(document_id__in=documents.values_list('document_id', flat=True)).values_list('document_id', flat=True))
@@ -134,6 +137,13 @@ def user_profile(request,user_id):
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
 
+def reset_daily_credits(credit):
+    now = timezone.now()
+    if now.date() > credit.last_reset_date.date():
+        credit.balance = 20
+        credit.last_reset_date = timezone.now()
+        credit.save()
+
 def get_scan_data(document_id):
     try:
         scan = ScanTransaction.objects.filter(document_id=document_id).latest('scan_date')
@@ -154,13 +164,13 @@ def request_credits(request, user_id):
         return JsonResponse({'error': 'Invalid request method'}, status=405)
     
     try:
-        # Check if user exists
+        
         try:
             user = User.objects.get(User_id=user_id)
         except User.DoesNotExist:
             return JsonResponse({'error': 'User not found'}, status=404)
         
-        # Get amount from request body
+       
         amount = request.POST.get('amount')
         if not amount:
             return JsonResponse({'error': 'Amount is required'}, status=400)
