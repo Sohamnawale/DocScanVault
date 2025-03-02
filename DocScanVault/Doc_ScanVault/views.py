@@ -5,6 +5,8 @@ from .models import CreditRequest, User, Credit
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
+import os
+from django.conf import settings
 
 @csrf_exempt  # Temporarily exempt CSRF protection for simplicity
 def index(request):
@@ -119,7 +121,20 @@ def request_credits(request, user_id):
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=400)
 
-
+    
+def upload(request):
+ 
+    if request.method == 'POST':
+        files=request.FILES.getlist('files')
+        print(files)
+        for uploaded_file in files:
+            file_path = os.path.join(settings.MEDIA_ROOT, uploaded_file.name)
+            os.makedirs(os.path.dirname(file_path), exist_ok=True)
+            with open(file_path, 'wb') as destination:
+                for chunk in uploaded_file.chunks():
+                    destination.write(chunk)
+    
+    return render(request, 'Doc_ScanVault/upload.html')
         
     
 
