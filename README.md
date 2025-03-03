@@ -21,9 +21,11 @@ Doc ScanVault is a web application designed to manage and analyze documents. It 
  # 2.Install dependencies
   pip install -r requirements.txt
 
- # 3. Run the application
- python manage.py startapp Doc_ScanVault
- python manage.py runserver
+## 3. Run the application
+```sh
+python manage.py startapp Doc_ScanVault
+python manage.py runserver
+
 
 
  ## Usage
