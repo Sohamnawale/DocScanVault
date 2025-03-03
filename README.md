@@ -1,18 +1,18 @@
 # DocScanVault
-Doc ScanVault is a web application designed to manage and analyze documents. It allows users to upload documents, check for similarities, and manage their account credits
+Doc ScanVault is a web application designed to manage and analyze documents. It allows users to upload documents and manage their account credits
 
 ## Features
 
 * **User Authentication:** Secure registration and login functionality.
 * **Document Upload:** Users can upload documents in various formats (PDF, DOCX, etc.).
-**Credit Management:** Users have a credit balance for scanning documents.
-**Metadata Storage:** Stores and manages document metadata
+* **Credit Management:** Users have a credit balance for scanning documents.
+* **Metadata Storage:** Stores and manages document metadata
 
 ## Technologies Used
-**Backend:** Django (Python)
- **Database:** (Configurable; SQLite by default)
- **Frontend:** HTML, CSS, JavaScript (Basic implementation provided)
- **Hashing:** hashlib (for document content hashing)
+* **Backend:** Django (Python)
+* **Database:** (Configurable; SQLite by default)
+* **Frontend:** HTML, CSS, JavaScript (Basic implementation provided)
+* **Hashing:** hashlib (for document content hashing)
 
  # Installation
  1.  **Clone the Repository:**
