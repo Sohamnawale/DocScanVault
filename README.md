@@ -16,7 +16,8 @@ Doc ScanVault is a web application designed to manage and analyze documents. It 
 
  # Installation
  1.  **Clone the Repository:**
- git clone https://github.com/Sohamnawale/DocScanVault.git
+ ```git clone https://github.com/Sohamnawale/DocScanVault.git 
+ ```
 
  # 2.Install dependencies
   pip install -r requirements.txt
